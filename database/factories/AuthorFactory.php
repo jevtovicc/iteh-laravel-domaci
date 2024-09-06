@@ -16,8 +16,6 @@ class AuthorFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }
