@@ -31,7 +31,16 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $book = Book::create([
+            'title' => $request->title,
+            'author_id' => $request->author_id,
+            'publisher_id' => $request->publisher_id,
+            'store_id' => $request->store_id,
+            'price' => $request->price,
+            'stock' => $request->stock
+        ]);
+
+        return response()->json(['Book created successfully', new BookResource($book)]);
     }
 
     /**
@@ -55,7 +64,16 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $book->title = $request->title;
+        $book->author_id = $request->author_id;
+        $book->publisher_id = $request->publisher_id;
+        $book->store_id = $request->store_id;
+        $book->price = $request->price;
+        $book->stock = $request->stock;
+
+        $book->save();
+
+        return response()->json(['Book updated successfully', new BookResource($book)]);
     }
 
     /**
@@ -63,6 +81,7 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return response()->json('Book deleted successfully');
     }
 }
