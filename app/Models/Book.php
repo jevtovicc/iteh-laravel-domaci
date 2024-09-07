@@ -38,7 +38,7 @@ class Book extends Model
         return $this->belongsToMany(Genre::class);
     }
 
-    public function orderItems()
+    public function items()
     {
         return $this->hasMany(OrderItem::class);
     }

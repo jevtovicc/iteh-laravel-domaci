@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\AuthorBookController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
@@ -28,10 +29,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // CRUD operations for books (only for authenticated users)
     Route::resource('books', BookController::class)->only(['update', 'store', 'destroy']);
+
+
+    Route::resource('orders', OrderController::class)->only(['update', 'store', 'destroy']);
 });
 
 // Routes for books accessible to all users (both authenticated and non-authenticated)
 Route::resource('books', BookController::class)->only(['index', 'show']);
+
+Route::resource('orders', OrderController::class)->only(['index', 'show']);
 
 // Nested resource route for authors and their books
 Route::resource('authors.books', AuthorBookController::class);

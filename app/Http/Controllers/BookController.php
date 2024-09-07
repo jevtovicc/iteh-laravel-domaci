@@ -40,7 +40,7 @@ class BookController extends Controller
             'stock' => $request->stock
         ]);
 
-        return response()->json(['Book created successfully', new BookResource($book)]);
+        return response()->json(['Book created successfully', new BookResource($book), 201]);
     }
 
     /**
