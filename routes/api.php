@@ -11,6 +11,8 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::resource('books', BookController::class)->only(['index', 'show']);
+Route::resource('authors.books', AuthorBookController::class);
 
 // Ensure frontend requests are stateful
 Route::middleware([EnsureFrontendRequestsAreStateful::class])->group(function () {
@@ -19,25 +21,22 @@ Route::middleware([EnsureFrontendRequestsAreStateful::class])->group(function ()
     })->middleware('auth:sanctum');
 });
 
-// Protected routes for authenticated users
+// Protected routes for authenticated users (both admin and customer)
 Route::middleware(['auth:sanctum'])->group(function () {
+    // Profile and logout for authenticated users
     Route::get('/profile', function (Request $request) {
         return auth()->user();
     });
-
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // CRUD operations for books (only for authenticated users)
-    Route::resource('books', BookController::class)->only(['update', 'store', 'destroy']);
+    // Admin routes
+    Route::middleware(['role:admin'])->group(function () {
+        Route::resource('books', BookController::class)->only(['store', 'destroy', 'update']);
+        Route::resource('orders', OrderController::class)->only(['destroy', 'update', 'show', 'index']);
+    });
 
-
-    Route::resource('orders', OrderController::class)->only(['update', 'store', 'destroy']);
+    // Customer routes
+    Route::middleware(['role:customer'])->group(function () {
+        Route::resource('orders', OrderController::class)->only(['store', 'show', 'index']);
+    });
 });
-
-// Routes for books accessible to all users (both authenticated and non-authenticated)
-Route::resource('books', BookController::class)->only(['index', 'show']);
-
-Route::resource('orders', OrderController::class)->only(['index', 'show']);
-
-// Nested resource route for authors and their books
-Route::resource('authors.books', AuthorBookController::class);

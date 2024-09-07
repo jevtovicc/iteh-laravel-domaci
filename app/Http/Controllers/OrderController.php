@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResource;
+use App\Models\Book;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,16 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = order::all();
+        // If the user is an admin, return all orders
+        if ($request->user()->hasRole('admin')) {
+            $orders = Order::all();
+        } else {
+            // If the user is a customer, return only their orders
+            $orders = Order::where('user_id', $request->user()->id)->get();
+        }
+
         return new OrderCollection($orders);
     }
 
@@ -37,31 +45,43 @@ class OrderController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Get the authenticated user
-        $user = auth()->user();
+        // Fetch all book IDs from the request
+        $bookIds = array_column($request->items, 'book_id');
 
-        // Inside store method
-        $total = 0;
+        // Fetch books and their stock
+        $books = Book::whereIn('id', $bookIds)->get()->keyBy('id');
 
+        // Check stock availability
         foreach ($request->items as $item) {
-            $book = \App\Models\Book::find($item['book_id']);
-            $total += $item['quantity'] * $book->price;
+            $book = $books->get($item['book_id']);
+            if (!$book || $book->stock < $item['quantity']) {
+                return response()->json(['error' => 'Insufficient stock for book ID ' . $item['book_id']], 400);
+            }
         }
+
+        // Calculate total
+        $total = array_reduce($request->items, function ($carry, $item) use ($books) {
+            $book = $books->get($item['book_id']);
+            return $carry + ($item['quantity'] * $book->price);
+        }, 0);
 
         // Create order
         $order = Order::create([
-            'user_id' => $user->id,
+            'user_id' => $request->user()->id,
             'total_amount' => $total,
-            'status' => 'pending',
+            'status' => 'pending'
         ]);
 
-        // Create order items
+        // Create order items and update stock
         foreach ($request->items as $item) {
-            $book = \App\Models\Book::find($item['book_id']);
+            $book = $books->get($item['book_id']);
+            $book->stock -= $item['quantity'];
+            $book->save();
+
             $order->items()->create([
                 'book_id' => $item['book_id'],
                 'quantity' => $item['quantity'],
-                'price' => $book->price,
+                'price' => $book->price
             ]);
         }
 
@@ -71,9 +91,19 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show(Request $request, Order $order)
     {
-        return new orderResource($order);
+        // Check if the user is an admin
+        if ($request->user()->hasRole('admin')) {
+            return new OrderResource($order);
+        }
+
+        // If the user is a customer, ensure they can only view their own orders
+        if ($order->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'You are not authorized to view this order'], 403);
+        }
+
+        return new OrderResource($order);
     }
 
     /**
