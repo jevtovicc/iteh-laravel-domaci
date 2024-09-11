@@ -101,6 +101,7 @@ class DatabaseSeeder extends Seeder
             'publisher_id' => $laguna->id,
             'price' => 1099.00,
             'format' => 'Mek povez',
+            'cover_image_path' => 'images/pokretni_praznik_vv.jpg',
             'page_count' => 235,
             'description' => '"Pokretni praznik” jedna je od poslednjih knjiga američkog nobelovca Ernesta Hemingveja, puna slika iz piščevog života u Parizu u periodu između 1921. i 1926. godine. Ovo je autobiografsko delo “fluidnog žanra”, koje je Meri Hemingvej, piščeva četvrta žena, objavila tri godine po njegovoj smrti, uz napomenu da ju je on s prekidima pisao od 1957. do 1960. godine. Podeljen na dvadeset pojedinačnih poglavlja, “Pokretni praznik” se sastoji od svojevrsnih skica o Parizu s početka XX veka, o mnogim tadašnjim piscima i umetnicima, Hemingvejevom svakodnevnom životu (navike, život sa prvom ženom i sinom, nedostatak novca, druženje i razgovori po kafeima i knjižarama), njegovim poetičkim stavovima i, možda najvažnije, njegovoj posvećenosti pisanju.'
         ]);
@@ -116,6 +117,7 @@ class DatabaseSeeder extends Seeder
             'publisher_id' => $laguna->id,
             'price' => 1099.00,
             'format' => 'Mek povez',
+            'cover_image_path' => 'images/niko_i_nista_u_parizu_i_londonu_vv.jpg',
             'page_count' => 219,
             'description' => 'Niko i ništa u Parizu i Londonu (1933.) prva je objavljena knjiga Džordža Orvela. Sadrži tužne i savremenom čitaocu jezivo bliske životne ispovesti o ekstremnoj bedi londonskih skitnica i modernom ropstvu pomoćnih kuhinjskih radnika u hotelima Pariza. Ove priče-reportaže o pukom preživljavanju u tadašnjim najluksuznijim evropskim prestonicama su proistekle iz neobičnih društvenih eksperimenata u kojima se autor lično okušao kako bi preispitao predrasude i zablude o siromaštvu i teškom radu.
 
@@ -134,7 +136,8 @@ Orvel je smatrao da je veliki problem to što se inteligentni, kultivisani ljudi
             'author_id' => $tolkin->id,
             'publisher_id' => $publikPraktikum->id,
             'price' => 1099.00,
-            'format' => 'Tvrd povez',
+            'format' => 'Mek povez',
+            'cover_image_path' => 'images/gospodar_prstenova_-_druzina_prstena_mek_povez_vv.jpg',
             'page_count' => 484,
             'description' => 'Kada ekscentrični Hobit Bilbo Bagins na oproštajnoj zabavi povodom svog 111. rođendana iznenada i naočigled zaprepašćenih gostiju volšebno nestane, u idiličnom Okrugu pokrenuće se lanac događaja koji će uzdrmati čitav Srednji svet i odrediti njegovu sudbinu. Bilbo je, naime, odlučio da ostatak života provede u vilovnjačkom carstvu Rivendal, i svu svoju imovinu ostavio je mladom rođaku Frodu Baginsu, uključujući i tajanstveni prsten koji njegovog nosioca čini nevidljivim. Ali dok se oprašta sa starim prijateljem Gandalfom, moćni čarobnjak shvata da je Bilbov prsten mnogo više od rekvizita za hobitske trikove...
 
@@ -154,6 +157,7 @@ Epska priča o zaboravljenim i ponovo izmišljenim vremenima u kojima su zemljom
             'publisher_id' => $publikPraktikum->id,
             'price' => 1099.00,
             'format' => 'Mek povez',
+            'cover_image_path' => 'images/gospodar_prstenova_-_dve_kule_mek_povez_vv.jpg',
             'page_count' => 407,
             'description' => 'Družina Prstena je na svom pohodu prošla razna iskušenja i na kraju se raspala - Gandalf je u borbi s demonom Balrogom nestao u utrobi zemlje, Boromir je najpre podlegao mračnoj moći Prstena a zatim poginuo u napadu Orka, dok su Pipin i Veseli oteti. Frodo, nakon što se uverio koliko mračna moć Prstena utiče na svakoga ko dođe u dodir s njim, odlučuje da put u Mordor nastavi sâm. Ipak, verni Sem ga ne napušta.
 
@@ -174,6 +178,7 @@ Daleko odatle, prateći trag otetih Hobita Pipina i Veselog, Aragorn, Legolas i 
             'price' => 1099.00,
             'format' => 'Mek povez',
             'page_count' => 467,
+            'cover_image_path' => 'images/gospodar_prstenova_-_povratak_kralja_mek_povez_vv.jpg',
             'description' => 'Iako poražene u prvoj velikoj bici Rata za Prsten, armije Mračnog Gospodara sve su moćnije i spremaju se na pohod na Minas Tirit, prestonicu Gondora, najmoćnijeg kraljevstva Ljudi. Pad Gondora značio bi i trijumf Zla i kraj Srednjeg sveta. Dok Ljudi, Patuljci i Vilovnjaci ujedinjuju snage u odbrani „belog grada” Minis Tirita, Frodo i Sem nastavljaju svoj tegoban put u Mordor.
 
 Rat se rasplamsava, ali njegov konačni ishod odlučiće nemogući poduhvat dva mala Hobita da unište Jedinstveni Prsten tamo gde ga je Mračni Gospodar i napravio: u vatrenoj utrobi Planine Usuda.
