@@ -28,7 +28,8 @@ class BookResource extends JsonResource
             'cover_image_path' => $this->resource->cover_image_path,
             'stores' => $this->resource->stores,
             'genres' => $this->resource->genres,
-            'available' => true
+            'available' => true,
+            'isbn' => $this->resource->isbn,
         ];
     }
 }
