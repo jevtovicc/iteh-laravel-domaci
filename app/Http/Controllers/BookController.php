@@ -7,6 +7,7 @@ use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -88,4 +89,24 @@ class BookController extends Controller
 
         return response()->json('Book deleted successfully');
     }
+
+public function search(Request $request)
+{
+    $query = $request->input('query');
+    
+    Log::info('Search query: ' . $query); // Log the query for debugging
+
+    if (!$query) {
+        return response()->json([]);
+    }
+
+    // Search books where the title contains the query
+    try {
+        $books = Book::where('title', 'ILIKE', "%{$query}%")->get();
+        return response()->json(new BookCollection($books));
+    } catch (\Exception $e) {
+        Log::error('Error during search: ' . $e->getMessage()); // Log any exception
+        return response()->json(['error' => 'An error occurred'], 500);
+    }
+}
 }

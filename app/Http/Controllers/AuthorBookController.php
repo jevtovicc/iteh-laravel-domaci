@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BookCollection;
 use App\Models\Book;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,6 @@ class AuthorBookController extends Controller
         if (is_null($books)) {
             return response()->json('Books not found', 404);
         }
-        return response()->json($books);
+        return response()->json(new BookCollection($books));
     }
 }

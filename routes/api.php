@@ -13,6 +13,7 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('books/search', [BookController::class, 'search']);
 Route::resource('books', BookController::class)->only(['index', 'show']);
 Route::resource('authors.books', AuthorBookController::class);
 
