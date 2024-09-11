@@ -46,8 +46,12 @@ class AuthController extends Controller
         $user = User::where('email', $request['email'])->firstOrFail();
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $roles = $user->roles->pluck('name'); 
 
-        return response()->json(['message' => 'Hi ' . $user->name . ', welcome to home', 'access_token' => $token, 'token_type' => 'Bearer']);
+        return response()->json(['message' => 'Hi ' . $user->name . ', welcome to home', 
+        'access_token' => $token, 
+        'token_type' => 'Bearer',
+        'roles' => $roles]);
     }
 
     public function logout(Request $request)
