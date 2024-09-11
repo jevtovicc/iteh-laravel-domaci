@@ -13,9 +13,7 @@ class Book extends Model
         'title',
         'author_id',
         'publisher_id',
-        'store_id',
         'price',
-        'stock'
     ];
 
     public function author()
@@ -27,10 +25,9 @@ class Book extends Model
     {
         return $this->belongsTo(Publisher::class);
     }
-
-    public function store()
+    public function stores()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsToMany(Store::class)->withPivot('stock'); // 'stock' now tracked in the pivot table
     }
 
     public function genres()

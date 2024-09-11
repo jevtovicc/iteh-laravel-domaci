@@ -14,8 +14,9 @@ class Store extends Model
         'location'
     ];
 
+    // Many-to-Many relationship with Book
     public function books()
     {
-        return $this->hasMany(Book::class);
+        return $this->belongsToMany(Book::class)->withPivot('stock'); // 'stock' is stored in the pivot table
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\Store;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -14,16 +15,9 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::all();
+        // Get all books and their related stores with stock
+        $books = Book::with('stores')->get();
         return new BookCollection($books);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -31,14 +25,20 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        // Create a new book
         $book = Book::create([
             'title' => $request->title,
             'author_id' => $request->author_id,
             'publisher_id' => $request->publisher_id,
-            'store_id' => $request->store_id,
             'price' => $request->price,
-            'stock' => $request->stock
         ]);
+
+        // Associate book with stores and stock via pivot table
+        if ($request->stores) {
+            foreach ($request->stores as $storeData) {
+                $book->stores()->attach($storeData['store_id'], ['stock' => $storeData['stock']]);
+            }
+        }
 
         return response()->json(['Book created successfully', new BookResource($book), 201]);
     }
@@ -48,15 +48,9 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
+        // Load related stores and stock for the specific book
+        $book->load('stores');
         return new BookResource($book);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
-    {
-        //
     }
 
     /**
@@ -64,14 +58,21 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $book->title = $request->title;
-        $book->author_id = $request->author_id;
-        $book->publisher_id = $request->publisher_id;
-        $book->store_id = $request->store_id;
-        $book->price = $request->price;
-        $book->stock = $request->stock;
+        // Update the book details
+        $book->update([
+            'title' => $request->title,
+            'author_id' => $request->author_id,
+            'publisher_id' => $request->publisher_id,
+            'price' => $request->price,
+        ]);
 
-        $book->save();
+        // Sync the stores and stock via pivot table
+        if ($request->stores) {
+            $book->stores()->sync([]);
+            foreach ($request->stores as $storeData) {
+                $book->stores()->attach($storeData['store_id'], ['stock' => $storeData['stock']]);
+            }
+        }
 
         return response()->json(['Book updated successfully', new BookResource($book)]);
     }
@@ -81,7 +82,10 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        // Detach book from stores and delete the book
+        $book->stores()->detach();
         $book->delete();
+
         return response()->json('Book deleted successfully');
     }
 }
