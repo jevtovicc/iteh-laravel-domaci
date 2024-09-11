@@ -3,6 +3,8 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\AuthorBookController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\GenreBookController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +16,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::resource('books', BookController::class)->only(['index', 'show']);
 Route::resource('authors.books', AuthorBookController::class);
 
-// Ensure frontend requests are stateful
+Route::prefix('genres')->group(function () {
+    Route::get('/', [GenreController::class, 'index']);      // List all genres
+    Route::get('/{genre}', [GenreController::class, 'show']); // Get a single genre
+});
+
+
+Route::get('genres/{genre}/books', [GenreBookController::class, 'getBooksByGenre']);
+
 Route::middleware([EnsureFrontendRequestsAreStateful::class])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();

@@ -22,7 +22,13 @@ class BookResource extends JsonResource
             'author' => $this->resource->author,
             'publisher' => $this->resource->publisher,
             'price' => $this->resource->price,
+            'description' => $this->resource->description,
+            'format' => $this->resource->format,
+            'page_count' => $this->resource->page_count,
+            'cover_image_path' => $this->resource->cover_image_path,
             'stores' => $this->resource->stores,
+            'genres' => $this->resource->genres,
+            'available' => true
         ];
     }
 }
