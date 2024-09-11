@@ -7,6 +7,8 @@ use App\Http\Resources\OrderResource;
 use App\Models\Book;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class OrderController extends Controller
 {
@@ -44,62 +46,77 @@ class OrderController extends Controller
             'items.*.book_id' => 'required|exists:books,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
-    
-        // Fetch all book IDs from the request
-        $bookIds = array_column($request->items, 'book_id');
-    
-        // Fetch books and their stock from the book_store pivot table
-        $books = Book::with('stores')->whereIn('id', $bookIds)->get();
-    
-        // Check stock availability
-        foreach ($request->items as $item) {
-            $book = $books->find($item['book_id']);
-            $stock = $book->stores->sum(function($store) use ($item) {
-                return $store->pivot->stock;
-            });
-    
-            if ($stock < $item['quantity']) {
-                return response()->json(['error' => 'Insufficient stock for book ID ' . $item['book_id']], 400);
-            }
-        }
-    
-        // Calculate total
-        $total = array_reduce($request->items, function ($carry, $item) use ($books) {
-            $book = $books->find($item['book_id']);
-            $price = $book->price; // Adjust if needed to get the price based on book format or store
-            return $carry + ($item['quantity'] * $price);
-        }, 0);
-    
-        // Create order
-        $order = Order::create([
-            'user_id' => $request->user()->id,
-            'total_amount' => $total,
-            'status' => 'pending'
-        ]);
-    
-        // Create order items and update stock
-        foreach ($request->items as $item) {
-            $book = $books->find($item['book_id']);
-            
-            // Update stock for each store
-            foreach ($book->stores as $store) {
-                $storePivot = $store->pivot;
-                if ($storePivot->stock >= $item['quantity']) {
-                    $storePivot->stock -= $item['quantity'];
-                    $storePivot->save();
-    
-                    $order->items()->create([
-                        'book_id' => $item['book_id'],
-                        'quantity' => $item['quantity'],
-                        'price' => $book->price
-                    ]);
-    
-                    break; // Exit loop after successfully updating stock
+
+        // Start a database transaction
+        DB::beginTransaction();
+
+        try {
+            // Fetch all book IDs from the request
+            $bookIds = array_column($request->items, 'book_id');
+        
+            // Fetch books and their stock from the book_store pivot table
+            $books = Book::with('stores')->whereIn('id', $bookIds)->get();
+        
+            // Check stock availability
+            foreach ($request->items as $item) {
+                $book = $books->find($item['book_id']);
+                $stock = $book->stores->sum(function($store) use ($item) {
+                    return $store->pivot->stock;
+                });
+        
+                if ($stock < $item['quantity']) {
+                    // Rollback transaction and return error response
+                    DB::rollBack();
+                    return response()->json(['error' => 'Insufficient stock for book ID ' . $item['book_id']], 400);
                 }
             }
+        
+            // Calculate total
+            $total = array_reduce($request->items, function ($carry, $item) use ($books) {
+                $book = $books->find($item['book_id']);
+                $price = $book->price; // Adjust if needed to get the price based on book format or store
+                return $carry + ($item['quantity'] * $price);
+            }, 0);
+        
+            // Create order
+            $order = Order::create([
+                'user_id' => $request->user()->id,
+                'total_amount' => $total,
+                'status' => 'pending'
+            ]);
+        
+            // Create order items and update stock
+            foreach ($request->items as $item) {
+                $book = $books->find($item['book_id']);
+                
+                // Update stock for each store
+                foreach ($book->stores as $store) {
+                    $storePivot = $store->pivot;
+                    if ($storePivot->stock >= $item['quantity']) {
+                        $storePivot->stock -= $item['quantity'];
+                        $storePivot->save();
+        
+                        $order->items()->create([
+                            'book_id' => $item['book_id'],
+                            'quantity' => $item['quantity'],
+                            'price' => $book->price
+                        ]);
+        
+                        break; // Exit loop after successfully updating stock
+                    }
+                }
+            }
+        
+            // Commit the transaction
+            DB::commit();
+        
+            return response()->json(['order' => new OrderResource($order)], 201);
+
+        } catch (\Exception $e) {
+            // Rollback transaction if there is an error
+            DB::rollBack();
+            return response()->json(['error' => 'An error occurred while processing your order'], 500);
         }
-    
-        return response()->json(['order' => new OrderResource($order)], 201);
     }
 
     /**
