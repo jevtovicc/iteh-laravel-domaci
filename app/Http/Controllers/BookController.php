@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\Genre;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -39,8 +40,11 @@ class BookController extends Controller
         'price' => 'required|numeric',
         'publisher_id' => 'required|integer|exists:publishers,id',
         'author_id' => 'required|integer|exists:authors,id',
-        'image' => 'required|image'
+        'image' => 'required|image',
+        'genres.*' => 'exists:genres,name'
     ]);
+
+   
 
     $imageName = time().'.'.$request->image->extension();
     $request->image->move(public_path('images'), $imageName);
@@ -57,6 +61,12 @@ class BookController extends Controller
         'format' => $validated['format'],
         'cover_image_path' => 'images/' . $imageName, // Can be null if no image uploaded
     ]);
+
+     // Attach genres to the book
+     if ($request->has('genres') && is_array($request->genres)) {
+        $genreIds = Genre::whereIn('name', $request->genres)->pluck('id')->toArray();
+        $book->genres()->attach($genreIds);
+    }
 
     // // Handle attaching stores and stock (ensure `stores` is an array of data)
     if ($request->has('stores') && is_array($request->stores)) {
