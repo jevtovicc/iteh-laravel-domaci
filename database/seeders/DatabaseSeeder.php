@@ -195,5 +195,101 @@ Epilog epske priče o poslednjem zajedničkom pohodu Hobita, Ljudi, Vilovnjaka, 
             $store2->id => ['stock' => 10],
         ]);
         $book5->genres()->sync([$genre2->id]);
+
+
+        $book6 = Book::create([
+            'title' => 'Starac i more',
+            'author_id' => $hemingway->id,
+            'publisher_id' => $laguna->id,
+            'price' => 899.00,
+            'format' => 'Mek povez',
+            'cover_image_path' => 'images/starac_i_more_vv.jpg',
+            'page_count' => 108,
+            'isbn' => '9788689203769',
+            'description' => 'Starac i more je verovatno najpoznatiji roman najpoznatijeg pisca na svetu. Priča o ribaru sa Kube koji se tokom tri dana bori sa silama prirode da preživi na otvorenom moru. Ali i sa svojom ljudskom naravi koja, sačinjena od slabosti, ponosa, strahova i svesti o svojoj krhkoj prirodi, može veoma lako postati i glavni protivnik u borbi za život.
+
+    Pred čitaocima je ponovo remek-delo neprolazne vrednosti koje jednostavnim, a živim, ubedljivim i majstorski izvedenim jezikom obrađuje temu hrabrosti da se iznađe lična pobeda u susretu sa očiglednim porazom. Potvrda za ovo je što je Starac i more jedan od samo devet romana koja je Nobelov komitet ikada eksplicitno naveo u svom obrazloženju za odluku o dodeljivanju najveće književne nagrade na svetu. Hemingvej nam je ovim delom ostavio kolosalni dokaz svog književnog genija i veličanstveni doprinos književnosti XX veka.'
+        ]);
+        $book6->stores()->attach([
+            $store1->id => ['stock' => 8],
+            $store2->id => ['stock' => 5],
+        ]);
+        $book6->genres()->sync([$genre4->id]);
+
+        $book7 = Book::create([
+            'title' => '1984',
+            'author_id' => $orvel->id,
+            'publisher_id' => $kontrastIzdavastvo->id,
+            'price' => 1299.00,
+            'format' => 'Mekpovez',
+            'cover_image_path' => 'images/1984_vv.jpg',
+            'page_count' => 320,
+            'isbn' => '9788652146048',
+            'description' => 'Rat je mir
+    Sloboda je ropstvo
+    Neznanje je moć.
+
+    „Onaj ko kontroliše prošlost“, glasio je partijski slogan, „kontroliše budućnost: onaj ko kontroliše sadašnjost kontroliše prošlost.“
+
+    Otkako je 1949. godine objavljena, Orvelova 1984 služila je kao podsetnik svakoj novoj generaciji da bude na oprezu kako stvarnost romana ne bi postala naša realnost.
+
+    Čini se da su neki 1984 čitali sa više razumevanja od drugih i da su je koristili kao udžbenik. Jer Orvelova realnost je, izgleda, konačno postala realnost naših života. Kontrolisani mediji i dirigovana kontrola društvenih mreža na kojima je sloboda mišljenja zamenjena „slobodom govora“ samo su delić ostvarenog inventara Orvelovog najpoznatijeg i najmračnijeg romana.
+    '
+        ]);
+        $book7->stores()->attach([
+            $store1->id => ['stock' => 9],
+            $store2->id => ['stock' => 4],
+        ]);
+        $book7->genres()->sync([$genre3->id]);
+
+
+        $book8 = Book::create([
+            'title' => 'Životinjska farma',
+            'author_id' => $orvel->id,
+            'publisher_id' => $kontrastIzdavastvo->id,
+            'price' => 699.00,
+            'format' => 'Mekpovez',
+            'cover_image_path' => 'images/zivotinjska_farma_vv.jpg',
+            'page_count' => 160,
+            'isbn' => '9788652142644',
+            'description' => 'Kultna knjiga XX veka.
+
+„Slabi ili jaki, pametni ili priprosti, svi smo mi braća. Nijedna životinja nikad ne sme ubiti neku drugu. Sve životinje su jednake.
+
+A sada, drugovi, ispričaću vam šta sam prošle noći sanjao. Ne mogu vam opisati taj san. Bio je to san o tome kako će zemlja izgledati pošto Čovek sa nje iščezne. Ali podsetio me je na nešto što sam odavno već zaboravio.“
+
+Povod za nastanak Životinjske farme nalazio se u Orvelovoj analizi posledica Ruske revolucije koja je prerasla u totalitarni režim i diktaturu stvorenu oko kulta ličnosti, kao i u njegovom iskustvu stečenom tokom Španskog građanskog rata. Iako je javnost često insistirala na momentu kritike sovjetske vlasti, Orvel je uvek naglašavao da se Životinjska farma iako prvenstveno satira o Ruskoj revoluciji, odnosi na svaku nasilnu revoluciju koju predvode nemarni ljudi gladni vlasti. „Hteo sam da naravoučenije bude da revolucije donose radikalno poboljšanje samo kada su mase budne i znaju kako da zbace svoje vođe čim ovi obave svoj posao. Trebalo je da prekretnica u priči bude trenutak kada svinje zadrže mleko i jabuke za sebe“, isticao je Orvel razočaran što je čitaocima možda promakao ovaj ključni momenat teksta.
+
+I pored piščeve bojazni, ova alegorijska antiutopija odmah je privukla veliku pažnju. Danas se smatra jednim od najboljih romana XX veka, postala je neizostavna lektira svakog savremenog čitaoca, a 1996. godine dobila je nagradu Hugo. Danas je možda više nego ikad pre potrebno da ovo delo čitamo i razumemo.
+
+„Sve životinje su jednake,
+ali neke životinje su jednakije
+od drugih.“'
+        ]);
+        $book8->stores()->attach([
+            $store1->id => ['stock' => 9],
+            $store2->id => ['stock' => 4],
+        ]);
+        $book8->genres()->sync([$genre3->id]);
+
+
+        $book9 = Book::create([
+            'title' => 'Kataloniji u čast',
+            'author_id' => $orvel->id,
+            'publisher_id' => $kontrastIzdavastvo->id,
+            'price' => 800.00,
+            'format' => 'Mekpovez',
+            'cover_image_path' => 'images/kataloniji_u_cast_vv.jpg',
+            'page_count' => 240,
+            'isbn' => '9788644707707',
+            'description' => 'Kataloniji u čast je roman nastao na osnovu Orvelovog ličnog iskustva iz Španskog građanskog rata, gde je učestvovao na strani RPMU-a (Radnicke partije marksističkog ujedinjenja). U nevelikom vremenskom zahvatu kojim se bavi ovo delo, Orvel se trudi da nam što objektivnije izveštava o ratnim zbivanjima na frontu i atmosferi u Barseloni i drugim gradovima na severoistoku zemlje. Rat u kome se obreo je suma medijske propagande, pacova u rovu i isprazne ideologije izvan njega, ali je taj isti rat (osim desetina političkih partija i pokreta) nosio nešto čijom će se sudbinom Orvel neodvojivo baviti – revoluciju. Iza svih tih dešavanja, Orvel će nas upoznati sa mentalitetom španskog naroda i duhom Španije koji mu je, uprkos svemu, uvek budio maštu.
+
+U svakom ratu je isto, vojnici se bore, novinari se dernjaju, i nijedan od tih pravih patriota ne stiže do rovova na frontu, osim na brzinski propagandni obilazak.'
+        ]);
+        $book9->stores()->attach([
+            $store1->id => ['stock' => 9],
+            $store2->id => ['stock' => 4],
+        ]);
+        $book9->genres()->sync([$genre3->id]);
     }
 }

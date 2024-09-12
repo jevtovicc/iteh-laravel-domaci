@@ -16,8 +16,9 @@ class BookController extends Controller
      */
     public function index()
     {
-        // Get all books and their related stores with stock
-        $books = Book::with('stores')->get();
+        $perPage = 8;
+        
+        $books = Book::with('stores')->paginate($perPage);
         return new BookCollection($books);
     }
 
