@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\AuthorBookController;
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\GenreBookController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PublisherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
@@ -43,6 +45,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('books', BookController::class)->only(['store', 'destroy', 'update']);
         Route::resource('orders', OrderController::class)->only(['destroy', 'update', 'show', 'index']);
+        Route::get('authors', [AuthorController::class, 'index']); 
+        Route::get('publishers', [PublisherController::class, 'index']); 
     });
 
     // Customer routes

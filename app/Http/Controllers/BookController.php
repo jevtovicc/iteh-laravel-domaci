@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
@@ -26,24 +27,50 @@ class BookController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // Create a new book
-        $book = Book::create([
-            'title' => $request->title,
-            'author_id' => $request->author_id,
-            'publisher_id' => $request->publisher_id,
-            'price' => $request->price,
-        ]);
+{
 
-        // Associate book with stores and stock via pivot table
-        if ($request->stores) {
-            foreach ($request->stores as $storeData) {
-                $book->stores()->attach($storeData['store_id'], ['stock' => $storeData['stock']]);
-            }
+    // Validate the incoming request
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'isbn' => 'required|string|max:13',
+        'description' => 'required|string',
+        'format' => 'required|string',
+        'page_count' => 'required|integer',
+        'price' => 'required|numeric',
+        'publisher_id' => 'required|integer|exists:publishers,id',
+        'author_id' => 'required|integer|exists:authors,id',
+        'image' => 'required|image'
+    ]);
+
+    $imageName = time().'.'.$request->image->extension();
+    $request->image->move(public_path('images'), $imageName);
+
+    // Create a new book with validated data
+    $book = Book::create([
+        'title' => $validated['title'],
+        'author_id' => $validated['author_id'],
+        'publisher_id' => $validated['publisher_id'],
+        'price' => $validated['price'],
+        'isbn' => $validated['isbn'],
+        'description' => $validated['description'],
+        'page_count' => $validated['page_count'],
+        'format' => $validated['format'],
+        'cover_image_path' => 'images/' . $imageName, // Can be null if no image uploaded
+    ]);
+
+    // // Handle attaching stores and stock (ensure `stores` is an array of data)
+    if ($request->has('stores') && is_array($request->stores)) {
+        foreach ($request->stores as $storeData) {
+            $book->stores()->attach($storeData['store_id'], ['stock' => $storeData['stock']]);
         }
-
-        return response()->json(['Book created successfully', new BookResource($book), 201]);
     }
+
+    // Return a success response with the newly created book resource
+    return response()->json([
+        'message' => 'Book created successfully',
+        'book' => new BookResource($book),
+    ], 201);
+}
 
     /**
      * Display the specified resource.
