@@ -8,7 +8,7 @@ use App\Models\Book;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -17,6 +17,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        Log::info("Usao sam u funkciju index u OrderController");
+        Log::info('User role:', [auth()->user()->role]);
         // If the user is an admin, return all orders
         if ($request->user()->hasRole('admin')) {
             $orders = Order::all();
@@ -124,6 +126,7 @@ class OrderController extends Controller
      */
     public function show(Request $request, Order $order)
     {
+        Log::info('Evo me u show metodi');
         // Check if the user is an admin
         if ($request->user()->hasRole('admin')) {
             return new OrderResource($order);

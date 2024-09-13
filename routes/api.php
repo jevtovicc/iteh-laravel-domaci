@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\AuthorBookController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookStoreController;
 use App\Http\Controllers\GenreBookController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\OrderController;
@@ -15,6 +16,7 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('books/{bookId}/stores', [BookStoreController::class, 'getStoresForBook']);
 Route::get('books/search', [BookController::class, 'search']);
 Route::resource('books', BookController::class)->only(['index', 'show']);
 Route::resource('authors.books', AuthorBookController::class);
@@ -44,8 +46,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Admin routes
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('books', BookController::class)->only(['store', 'destroy', 'update']);
-        Route::resource('orders', OrderController::class)->only(['destroy', 'update', 'show', 'index']);
+        Route::resource('orders', OrderController::class)->only(['index', 'show']);
         Route::get('authors', [AuthorController::class, 'index']); 
+        Route::post('authors', [AuthorController::class, 'store']); 
         Route::get('publishers', [PublisherController::class, 'index']); 
     });
 

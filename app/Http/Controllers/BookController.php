@@ -16,11 +16,28 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $perPage = 8;
-        
-        $books = Book::with('stores')->paginate($perPage);
+        $sortBy = $request->query('sort', 'title'); // default sort by title
+        $order = $request->query('order', 'asc'); // default sort order
+    
+        // Validate `sortBy` and `order` parameters
+        $validSortBy = ['title', 'price', 'author']; // Add other valid sort columns
+        $validOrder = ['asc', 'desc'];
+    
+        if (!in_array($sortBy, $validSortBy)) {
+            $sortBy = 'title'; // Fallback to default
+        }
+    
+        if (!in_array($order, $validOrder)) {
+            $order = 'asc'; // Fallback to default
+        }
+    
+        $books = Book::with('stores')
+            ->orderBy($sortBy, $order)
+            ->paginate($perPage);
+    
         return new BookCollection($books);
     }
 
