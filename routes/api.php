@@ -45,7 +45,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Admin routes
     Route::middleware(['role:admin'])->group(function () {
-        Route::resource('books', BookController::class)->only(['store', 'destroy', 'update']);
+        Route::post('/', [BookController::class, 'store']);
+        Route::resource('books', BookController::class)->only(['destroy', 'store', 'update']);
+        // Route::delete('/books/{bookId}', [BookController::class, 'destroy']);
         Route::resource('orders', OrderController::class)->only(['index', 'show']);
         Route::get('authors', [AuthorController::class, 'index']); 
         Route::post('authors', [AuthorController::class, 'store']); 

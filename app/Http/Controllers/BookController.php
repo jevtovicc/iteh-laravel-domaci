@@ -114,23 +114,36 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        // Update the book details
-        $book->update([
-            'title' => $request->title,
-            'author_id' => $request->author_id,
-            'publisher_id' => $request->publisher_id,
-            'price' => $request->price,
-        ]);
 
-        // Sync the stores and stock via pivot table
-        if ($request->stores) {
+        // Validiraj dolazni zahtev
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'author_id' => 'sometimes|required|integer|exists:authors,id',
+            'publisher_id' => 'sometimes|required|integer|exists:publishers,id',
+            'price' => 'sometimes|required|numeric',
+            'isbn' => 'sometimes|required|string|max:13',
+            'description' => 'sometimes|required|string',
+            'page_count' => 'sometimes|required|integer',
+            'stores' => 'sometimes|array',
+            'stores.*.store_id' => 'required_with:stores|integer|exists:stores,id',
+            'stores.*.stock' => 'required_with:stores|integer|min:0',
+        ]);
+    
+        // Ažuriraj samo prisutna polja
+        $book->update($validated);
+    
+        // Sinhronizuj prodavnice i zalihe
+        if (isset($validated['stores'])) {
             $book->stores()->sync([]);
-            foreach ($request->stores as $storeData) {
+            foreach ($validated['stores'] as $storeData) {
                 $book->stores()->attach($storeData['store_id'], ['stock' => $storeData['stock']]);
             }
         }
-
-        return response()->json(['Book updated successfully', new BookResource($book)]);
+    
+        return response()->json([
+            'message' => 'Book updated successfully',
+            'book' => new BookResource($book),
+        ]);
     }
 
     /**
