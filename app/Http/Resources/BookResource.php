@@ -30,6 +30,7 @@ class BookResource extends JsonResource
             'genres' => $this->resource->genres,
             'available' => true,
             'isbn' => $this->resource->isbn,
+            'total_stock' => $this->resource->totalStock()
         ];
     }
 }

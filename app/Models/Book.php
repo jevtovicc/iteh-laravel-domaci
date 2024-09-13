@@ -44,4 +44,9 @@ class Book extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function totalStock()
+{
+    return $this->stores()->sum('stock');
+}
 }

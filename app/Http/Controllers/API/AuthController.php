@@ -33,8 +33,9 @@ class AuthController extends Controller
         $user->assignRole('customer'); // Assign 'customer' role by default
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $roles = $user->roles->pluck('name'); 
 
-        return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
+        return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer', 'roles' => $roles]);
     }
 
     public function login(Request $request)
